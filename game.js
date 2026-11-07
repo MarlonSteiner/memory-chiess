@@ -26,9 +26,10 @@ const CUBE = [
 const DICE_FACES = [...COLORS, BLACK];
 const SAVE_KEY = 'memory-chiess:save';
 const NAMES_KEY = 'memory-chiess:names';
-const ID_KEY = 'memory-chiess:id';
 const ROOM_KEY = 'memory-chiess:room';
 const MAX_PLAYERS = 4;
+const MIN_BET = 1000;
+const BET_STEP = 500;
 const CODE_LETTERS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no 0/O or 1/I/L to mix up
 const CODE_LENGTH = 5;
 
@@ -88,7 +89,47 @@ function openMenu() {
   $('#rejoin').hidden = !room;
   if (room) $('#rejoin').textContent = `Rejoin room ${room.code}`;
   renderNames();
+  renderAccountBar();
+  Account.refresh().then(renderAccountBar).catch(renderAccountBar);
   show('menu');
+}
+
+/* ---------- Account ---------- */
+
+function renderAccountBar() {
+  const bar = $('#account-bar');
+  if (Account.signedIn) {
+    bar.innerHTML = `<span></span><b>${money(Account.balance)}</b><button class="link">Sign out</button>`;
+    bar.querySelector('span').textContent = Account.name;
+    bar.querySelector('button').onclick = () => { Account.signOut(); store.del(ROOM_KEY); openMenu(); };
+  } else {
+    bar.innerHTML = '<button class="link">Sign in</button>';
+    bar.querySelector('button').onclick = () => withAccount(openMenu);
+  }
+}
+
+// Online play needs an account, so this asks for one first if the phone isn't signed in.
+let afterAccount = openMenu;
+function withAccount(next) {
+  if (Account.signedIn) return next();
+  afterAccount = next;
+  $('#account-error').textContent = '';
+  $('#password').value = '';
+  show('account');
+}
+
+async function enterAccount(action) {
+  const buttons = [$('#sign-in'), $('#sign-up')];
+  buttons.forEach((b) => { b.disabled = true; });
+  $('#account-error').textContent = 'One moment…';
+  try {
+    await Account.enter(action, $('#username').value.trim(), $('#password').value);
+    $('#password').value = '';
+    afterAccount();
+  } catch (e) {
+    $('#account-error').textContent = e.message;
+  }
+  buttons.forEach((b) => { b.disabled = false; });
 }
 
 /* ---------- Game setup ---------- */
@@ -122,6 +163,7 @@ function startBoard() {
   show('game');
   renderPlayers();
   renderChips();
+  if (online && game.bet) Account.stake(game.id, game.bet).catch(() => {});
   if (game.pending) spinTo(DICE_FACES.find((f) => f.id === game.pending));
   settle();
 }
@@ -159,6 +201,7 @@ function renderChips() {
 
 function say(html) { $('#bubble').innerHTML = `<span>${html}</span>`; }
 const dot = (c) => `<i class="dot" style="background:${c.fill};border-color:${c.edge}"></i>`;
+const money = (n) => `PHP${String(n).replace(/\B(?=(\d{3})+$)/g, "'")}`;
 const safe = (s) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
 const current = () => game.players[game.turn];
 const isMine = () => !online || current().id === online.me;
@@ -400,22 +443,30 @@ function finish() {
     const c = COLORS[i % COLORS.length];
     return `<span style="left:${(i * 37) % 100}%;animation-delay:${(i * 0.23) % 3}s;animation-duration:${3.4 + (i % 5) * 0.5}s">${Art.svg(100, Art.wash(50, 50, 46, c, 400 + i, 'flower'))}</span>`;
   }).join('');
+  settleBet(winners);
   const canRestart = !online || online.host === online.me;
   $('#again').hidden = !canRestart;
   $('#waiting-host').hidden = canRestart;
   $('#end-sheet').hidden = false;
 }
 
-/* ---------- Online rooms ---------- */
-
-function myId() {
-  let id = store.get(ID_KEY);
-  if (!id) {
-    id = Math.random().toString(36).slice(2, 12);
-    store.set(ID_KEY, id);
+async function settleBet(winners) {
+  const line = $('#bet-result');
+  line.hidden = !online || !game.bet;
+  if (line.hidden) return;
+  line.textContent = 'Counting the bets…';
+  const { id, bet, players } = game;
+  try {
+    await Account.stake(id, bet).catch(() => {}); // in case the first try never got through
+    const { delta } = await Account.settle(id, bet, players.map((p) => p.id), winners.map((p) => p.id));
+    if (game.id !== id) return;
+    line.textContent = delta > 0 ? `You won ${money(delta)}!` : delta < 0 ? `You lost ${money(-delta)}` : 'Nobody lost any money';
+  } catch (e) {
+    if (game.id === id) line.textContent = e.message;
   }
-  return id;
 }
+
+/* ---------- Online rooms ---------- */
 
 function makeCode() {
   const bytes = crypto.getRandomValues(new Uint8Array(CODE_LENGTH));
@@ -423,16 +474,19 @@ function makeCode() {
 }
 
 const cleanCode = (s) => s.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, CODE_LENGTH);
-const myName = () => $('#online-name').value.trim() || 'Player';
+const enoughMoney = () => Account.balance >= MIN_BET;
+const NOT_ENOUGH = `You need at least ${money(MIN_BET)} to play online.`;
+const seat = () => ({ id: Account.id, name: Account.name, balance: Account.balance });
 
 function roomMessage(a = null, g = game) {
-  const { seq, status, host, lobby } = online;
-  return { seq, status, host, lobby, game: g, act: a };
+  const { seq, status, host, lobby, bet } = online;
+  return { seq, status, host, lobby, bet, game: g, act: a };
 }
 
 function openOnline(code = '', error = '') {
+  if (!Account.signedIn) return withAccount(() => openOnline(code, error));
   leaveRoom();
-  $('#online-name').value = names[0] || '';
+  $('#online-who').textContent = `Playing as ${Account.name} with ${money(Account.balance)}`;
   $('#join-code').value = code;
   $('#online-error').textContent = error;
   setOnlineBusy(false);
@@ -465,8 +519,7 @@ function failJoin(message) {
 }
 
 async function connectRoom(code) {
-  const me = myId();
-  online = { code, me, host: null, seq: 0, status: 'joining', lobby: [], room: null };
+  online = { code, me: Account.id, host: null, seq: 0, status: 'joining', lobby: [], bet: MIN_BET, room: null };
   const mine = online;
   const room = await Net.open(code, {
     onStatus: (up) => { if (online === mine) showNet(up); },
@@ -486,13 +539,15 @@ function showNet(up) {
 }
 
 async function createRoom() {
+  if (!enoughMoney()) {
+    $('#online-error').textContent = NOT_ENOUGH;
+    return;
+  }
   setOnlineBusy(true);
-  names[0] = $('#online-name').value.trim();
-  store.set(NAMES_KEY, names);
   try {
     const code = makeCode();
     if (!await connectRoom(code)) return;
-    Object.assign(online, { host: online.me, status: 'lobby', seq: 1, lobby: [{ id: online.me, name: myName() }] });
+    Object.assign(online, { host: online.me, status: 'lobby', seq: 1, lobby: [seat()] });
     online.room.state(roomMessage());
     store.set(ROOM_KEY, { code });
     renderLobby();
@@ -506,10 +561,13 @@ async function joinRoom(code = cleanCode($('#join-code').value)) {
     $('#online-error').textContent = `Room codes have ${CODE_LENGTH} letters.`;
     return;
   }
+  // Going back to a game you're already in is always allowed, even with an empty purse.
+  if (!enoughMoney() && store.get(ROOM_KEY)?.code !== code) {
+    $('#online-error').textContent = NOT_ENOUGH;
+    return;
+  }
   setOnlineBusy(true);
   $('#online-error').textContent = 'Looking for the room…';
-  names[0] = $('#online-name').value.trim() || names[0] || '';
-  store.set(NAMES_KEY, names);
   try {
     if (!await connectRoom(code)) return;
     online.joinTimeout = setTimeout(() => {
@@ -522,7 +580,7 @@ async function joinRoom(code = cleanCode($('#join-code').value)) {
 
 function askToJoin() {
   if (online.joining) return;
-  const ask = () => online?.room?.ask({ t: 'join', id: online.me, name: names[0] || 'Player' });
+  const ask = () => online?.room?.ask({ t: 'join', ...seat() });
   ask();
   // The host may be away for a moment sharing the code, and asks aren't stored, so keep asking.
   online.joining = setInterval(ask, 1500);
@@ -534,7 +592,8 @@ function onRoomAsk(msg) {
   if (msg.t === 'leave') {
     online.lobby = online.lobby.filter((p) => p.id !== msg.id);
   } else if (msg.t === 'join' && !known && online.lobby.length < MAX_PLAYERS) {
-    online.lobby.push({ id: msg.id, name: String(msg.name).slice(0, 10) });
+    online.lobby.push({ id: msg.id, name: String(msg.name).slice(0, 10), balance: Number(msg.balance) || 0 });
+    online.bet = Math.min(online.bet, maxBet());
   } else {
     return;
   }
@@ -547,7 +606,7 @@ function onRoomState(msg) {
   if (msg.seq <= online.seq && online.status !== 'joining') return;
   const firstLook = online.status === 'joining';
   const next = msg.seq === online.seq + 1;
-  Object.assign(online, { seq: msg.seq, status: msg.status, host: msg.host, lobby: msg.lobby });
+  Object.assign(online, { seq: msg.seq, status: msg.status, host: msg.host, lobby: msg.lobby, bet: msg.bet });
   clearTimeout(online.joinTimeout);
 
   if (msg.status === 'closed') return failJoin('The host closed the room.');
@@ -581,6 +640,21 @@ function renderWaitingToJoin() {
   $('#online-error').textContent = 'Joining…';
 }
 
+// Nobody can be asked to bet more than the poorest player in the room has.
+function maxBet() {
+  const poorest = Math.min(...online.lobby.map((p) => p.balance));
+  return Math.max(MIN_BET, Math.floor(poorest / BET_STEP) * BET_STEP);
+}
+
+function changeBet(by) {
+  const bet = online.bet + by;
+  if (online.host !== online.me || bet < MIN_BET || bet > maxBet()) return;
+  online.bet = bet;
+  online.seq++;
+  online.room.state(roomMessage());
+  renderLobby();
+}
+
 function renderLobby() {
   $('#room-code').textContent = online.code;
   const isHost = online.host === online.me;
@@ -591,6 +665,10 @@ function renderLobby() {
     li.querySelector('span').textContent = p.id === online.me ? `${p.name} (you)` : p.name;
     $('#lobby-list').append(li);
   });
+  $('#bet-amount').textContent = money(online.bet);
+  $('#bet-down').hidden = $('#bet-up').hidden = !isHost;
+  $('#bet-down').disabled = online.bet <= MIN_BET;
+  $('#bet-up').disabled = online.bet >= maxBet();
   $('#start-room').hidden = !isHost;
   $('#start-room').disabled = online.lobby.length < 2;
   $('#start-room').textContent = online.lobby.length < 2 ? 'Waiting for a friend…' : 'Start game';
@@ -602,7 +680,7 @@ function renderLobby() {
 
 function startRoomGame() {
   const players = online.lobby.map((p, i) => ({ id: p.id, name: p.name, buddy: i, score: 0 }));
-  game = { players, chips: dealChips(), turn: 0, pending: null, again: false };
+  game = { id: makeCode().toLowerCase() + Date.now().toString(36), bet: online.bet, players, chips: dealChips(), turn: 0, pending: null, again: false };
   online.status = 'play';
   online.seq++;
   online.room.state(roomMessage());
@@ -663,11 +741,17 @@ function init() {
   $('#rejoin').addEventListener('click', () => {
     const room = store.get(ROOM_KEY);
     if (!room) return;
-    openOnline(room.code, 'Looking for the room…');
-    $('#online-name').value = names[0] || '';
-    joinRoom(room.code);
+    withAccount(() => {
+      openOnline(room.code, 'Looking for the room…');
+      joinRoom(room.code);
+    });
   });
   $('#play-online').addEventListener('click', () => openOnline());
+  $('#account-form').addEventListener('submit', (e) => { e.preventDefault(); enterAccount('login'); });
+  $('#sign-up').addEventListener('click', () => enterAccount('register'));
+  $('#account-back').addEventListener('click', openMenu);
+  $('#bet-down').addEventListener('click', () => changeBet(-BET_STEP));
+  $('#bet-up').addEventListener('click', () => changeBet(BET_STEP));
   $('#online-back').addEventListener('click', openMenu);
   $('#create-room').addEventListener('click', createRoom);
   $('#join-room').addEventListener('click', () => joinRoom());

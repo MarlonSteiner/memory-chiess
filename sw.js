@@ -1,6 +1,6 @@
 // Network first, so updates show up right away; the cache keeps the game playable offline.
-const CACHE = 'memory-chiess-v6';
-const FILES = ['./', 'index.html', 'style.css', 'art.js', 'net.js', 'game.js', 'vendor/mqtt.min.js', 'manifest.webmanifest',
+const CACHE = 'memory-chiess-v7';
+const FILES = ['./', 'index.html', 'style.css', 'art.js', 'net.js', 'account.js', 'game.js', 'vendor/mqtt.min.js', 'manifest.webmanifest',
   'icons/apple-touch-icon.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', (e) => {

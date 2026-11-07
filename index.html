@@ -13,7 +13,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
   <div id="sky" aria-hidden="true"></div>
@@ -21,6 +21,7 @@
   <section id="menu" class="screen stack">
     <div id="hero"></div>
     <h1>Memory<br>Chiess</h1>
+    <p id="account-bar"></p>
     <div class="panel">
       <p class="label" id="count-label">How many players?</p>
       <div class="count" role="radiogroup" aria-labelledby="count-label">
@@ -39,11 +40,7 @@
 
   <section id="online" class="screen stack" hidden>
     <h2>Online</h2>
-    <p class="hint">Each player uses their own phone.</p>
-    <div class="panel">
-      <label class="label" for="online-name">Your name</label>
-      <input id="online-name" class="field" maxlength="10" autocomplete="off" autocorrect="off" placeholder="Your name">
-    </div>
+    <p id="online-who" class="hint"></p>
     <button id="create-room" class="btn">Create a room</button>
     <div class="panel">
       <label class="label" for="join-code">Got a code?</label>
@@ -54,6 +51,23 @@
     <button id="online-back" class="link">Back</button>
   </section>
 
+  <section id="account" class="screen stack" hidden>
+    <h2>Your account</h2>
+    <p class="hint">New players start with PHP100'000.</p>
+    <form id="account-form">
+      <div class="panel">
+        <label class="label" for="username">Username</label>
+        <input id="username" class="field" maxlength="10" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Username">
+        <label class="label" for="password">Password</label>
+        <input id="password" class="field" type="password" maxlength="72" autocomplete="current-password" placeholder="Password">
+      </div>
+      <button id="sign-in" class="btn">Sign in</button>
+      <button id="sign-up" class="btn soft" type="button">Create account</button>
+    </form>
+    <p id="account-error" class="hint" role="status"></p>
+    <button id="account-back" class="link">Back</button>
+  </section>
+
   <section id="lobby" class="screen stack" hidden>
     <p class="hint">Your room code</p>
     <div id="room-code"></div>
@@ -61,6 +75,14 @@
     <div class="panel">
       <p class="label">Players</p>
       <ul id="lobby-list"></ul>
+    </div>
+    <div class="panel">
+      <p class="label">Everyone bets</p>
+      <div class="bet">
+        <button id="bet-down" aria-label="Lower the bet">−</button>
+        <p id="bet-amount"></p>
+        <button id="bet-up" aria-label="Raise the bet">+</button>
+      </div>
     </div>
     <button id="start-room" class="btn" hidden>Start game</button>
     <p id="lobby-wait" class="hint" hidden></p>
@@ -95,6 +117,7 @@
         <li>Wrong color? It hides again and your turn ends, so remember where it was.</li>
         <li>Black ends your turn too.</li>
         <li>When all the chips are gone, the most points wins.</li>
+        <li>Online, everyone bets what the host picks. The winner takes it all, and ties split it.</li>
       </ol>
       <button class="btn" data-close>Got it</button>
     </div>
@@ -106,14 +129,16 @@
       <div id="winner-art"></div>
       <h2 id="winner-title"></h2>
       <ul id="ranking"></ul>
+      <p id="bet-result" class="hint" hidden></p>
       <button id="again" class="btn">Play again</button>
       <p id="waiting-host" class="hint" hidden>The host can start a new game.</p>
       <button id="to-menu" class="link">Main menu</button>
     </div>
   </div>
 
-  <script src="art.js?v=6"></script>
-  <script src="net.js?v=6"></script>
-  <script src="game.js?v=6"></script>
+  <script src="art.js?v=7"></script>
+  <script src="net.js?v=7"></script>
+  <script src="account.js?v=7"></script>
+  <script src="game.js?v=7"></script>
 </body>
 </html>
