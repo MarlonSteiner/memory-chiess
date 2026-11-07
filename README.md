@@ -15,6 +15,12 @@ To install it, open the link in Safari, tap Share, then Add to Home Screen. It w
 
 A color with no chips left is rolled again.
 
+## Play online
+
+Tap Play online, create a room and share the 5-letter code or invite link. Up to 4 players join from their own phones, and the host starts the game. If a phone locks or the app closes, tap Rejoin room on the menu.
+
+Phones connect through HiveMQ's free public MQTT relay, so there is no server to run. Room data is encrypted with a key made from the room code, and rooms disappear from the relay after a day. The relay has no uptime guarantee; swapping it means changing `net.js`.
+
 ## Run locally
 
 ```bash

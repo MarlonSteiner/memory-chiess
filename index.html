@@ -13,12 +13,12 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
   <div id="sky" aria-hidden="true"></div>
 
-  <section id="menu" class="screen">
+  <section id="menu" class="screen stack">
     <div id="hero"></div>
     <h1>Memory<br>Chiess</h1>
     <div class="panel">
@@ -31,8 +31,40 @@
       <div id="names"></div>
     </div>
     <button id="continue" class="btn soft" hidden>Continue game</button>
-    <button id="play" class="btn">Play</button>
+    <button id="rejoin" class="btn soft" hidden></button>
+    <button id="play" class="btn">Play on this device</button>
+    <button id="play-online" class="btn soft">Play online</button>
     <button id="how" class="link">How to play</button>
+  </section>
+
+  <section id="online" class="screen stack" hidden>
+    <h2>Play online</h2>
+    <p class="hint">Each player uses their own phone.</p>
+    <div class="panel">
+      <label class="label" for="online-name">Your name</label>
+      <input id="online-name" class="field" maxlength="10" autocomplete="off" autocorrect="off" placeholder="Your name">
+    </div>
+    <button id="create-room" class="btn">Create a room</button>
+    <div class="panel">
+      <label class="label" for="join-code">Got a code?</label>
+      <input id="join-code" class="field code" maxlength="5" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" placeholder="ABCDE">
+      <button id="join-room" class="btn soft">Join room</button>
+    </div>
+    <p id="online-error" class="hint" role="status"></p>
+    <button id="online-back" class="link">Back</button>
+  </section>
+
+  <section id="lobby" class="screen stack" hidden>
+    <p class="hint">Your room code</p>
+    <div id="room-code"></div>
+    <button id="share-room" class="btn soft">Share invite</button>
+    <div class="panel">
+      <p class="label">Players</p>
+      <ul id="lobby-list"></ul>
+    </div>
+    <button id="start-room" class="btn" hidden>Start game</button>
+    <p id="lobby-wait" class="hint" hidden></p>
+    <button id="leave-room" class="link">Leave room</button>
   </section>
 
   <section id="game" class="screen" hidden>
@@ -51,6 +83,8 @@
     </div>
     <div id="bubble" role="status" aria-live="polite"></div>
   </section>
+
+  <div id="net" role="status" hidden>Reconnecting…</div>
 
   <div id="how-sheet" class="sheet" hidden>
     <div class="card">
@@ -73,11 +107,13 @@
       <h2 id="winner-title"></h2>
       <ul id="ranking"></ul>
       <button id="again" class="btn">Play again</button>
+      <p id="waiting-host" class="hint" hidden>The host can start a new game.</p>
       <button id="to-menu" class="link">Main menu</button>
     </div>
   </div>
 
-  <script src="art.js"></script>
-  <script src="game.js"></script>
+  <script src="art.js?v=3"></script>
+  <script src="net.js?v=3"></script>
+  <script src="game.js?v=3"></script>
 </body>
 </html>
