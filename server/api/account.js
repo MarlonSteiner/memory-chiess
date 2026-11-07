@@ -1,36 +1,8 @@
-import { BlobPreconditionFailedError, get, put } from '@vercel/blob';
 import { accounts } from '../lib/accounts.js';
+import { blobStore } from '../lib/blob-store.js';
 
 const SITE = 'https://marlonsteiner.github.io';
-const save = (path, data, options) => put(path, JSON.stringify(data), { access: 'private', contentType: 'application/json', ...options });
-
-async function read(path) {
-  const found = await get(path, { access: 'private', useCache: false });
-  if (found?.statusCode !== 200) return null;
-  return { data: await new Response(found.stream).json(), etag: found.blob.etag };
-}
-
-const handle = accounts({
-  read,
-  async create(path, data) {
-    try {
-      await save(path, data);
-      return true;
-    } catch (e) {
-      if (await read(path)) return false; // writing over an existing file is refused
-      throw e;
-    }
-  },
-  async update(path, data, etag) {
-    try {
-      await save(path, data, { allowOverwrite: true, ifMatch: etag });
-      return true;
-    } catch (e) {
-      if (e instanceof BlobPreconditionFailedError) return false;
-      throw e;
-    }
-  },
-});
+const handle = accounts(blobStore);
 
 export default async function account(req, res) {
   res.setHeader('Access-Control-Allow-Origin', SITE);
