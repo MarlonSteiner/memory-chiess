@@ -42,7 +42,7 @@
     return d + 'Z';
   }
 
-  // Rim + wash: the fill sits slightly off-centre so the rim is thick on one side, thin on the other.
+  // Rim + wash: the fill sits slightly off-center so the rim is thick on one side, thin on the other.
   function wash(cx, cy, r, pal, seed, shape = 'circle') {
     const R = rand(seed + 7);
     const ox = (R() - 0.5) * r * 0.07, oy = (R() - 0.5) * r * 0.07;
@@ -53,7 +53,7 @@
 
   const INK = '#3d2b30';
 
-  // Each colour has its own expression, so colours can also be told apart without seeing them.
+  // Each color has its own expression, so colors can also be told apart without seeing them.
   function face(kind, cx, cy, s, ink = INK) {
     const e = 0.32 * s, y = cy - 0.04 * s;
     const eye = (x) => `<ellipse cx="${x}" cy="${y}" rx="${0.105 * s}" ry="${0.135 * s}" fill="${ink}"/>` +

@@ -1,7 +1,7 @@
 {
   "name": "Memory Chiess",
   "short_name": "Memory Chiess",
-  "description": "A cute colour memory game for 2 to 4 players.",
+  "description": "A cute color memory game for 2 to 4 players.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

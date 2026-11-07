@@ -14,7 +14,7 @@ const BUDDIES = [
 ];
 const CHIPS_PER_COLOR = 4;
 const RINGS = [{ count: 13, radius: 39.5, start: -90 }, { count: 7, radius: 22.5, start: -90 }];
-// One die face per colour; the cube rotation that brings each face to the front.
+// One dice face per color; the cube rotation that brings each face to the front.
 const CUBE = [
   { side: 'rotateY(0deg)',   x: 0,   y: 0 },
   { side: 'rotateY(90deg)',  x: 0,   y: -90 },
@@ -23,7 +23,7 @@ const CUBE = [
   { side: 'rotateX(90deg)',  x: -90, y: 0 },
   { side: 'rotateX(-90deg)', x: 90,  y: 0 },
 ];
-const DIE_FACES = [...COLORS, BLACK];
+const DICE_FACES = [...COLORS, BLACK];
 const SAVE_KEY = 'memory-chiess:save';
 const NAMES_KEY = 'memory-chiess:names';
 
@@ -135,7 +135,7 @@ function renderChips() {
     el.style.left = `${slots[i].x}%`;
     el.style.top = `${slots[i].y}%`;
     el.style.animationDelay = `${i * 22}ms`;
-    // The back art depends on the slot, never on the colour underneath.
+    // The back art depends on the slot, never on the color underneath.
     el.innerHTML = `<div class="flip"><div class="side back">${Art.chipBack(100 + i)}</div><div class="side front">${Art.chipFront(color, 200 + i)}</div></div>`;
     box.append(el);
   });
@@ -152,8 +152,8 @@ function startTurn() {
   store.set(SAVE_KEY, game);
   document.querySelectorAll('.player').forEach((el, i) => el.classList.toggle('active', i === game.turn));
   $('#board').classList.remove('picking');
-  $('#die').classList.add('ready');
-  say(`<b>${safe(current().name)}</b>, tap the die!`);
+  $('#dice').classList.add('ready');
+  say(`<b>${safe(current().name)}</b>, tap the dice!`);
 }
 
 function nextTurn() {
@@ -167,15 +167,15 @@ async function roll() {
   if (phase !== 'roll') return;
   phase = 'rolling';
   const me = session;
-  $('#die').classList.remove('ready');
+  $('#dice').classList.remove('ready');
   say('Rolling…');
 
-  // A colour with no chips left is rolled again, so nobody hunts for chips that don't exist.
+  // A color with no chips left is rolled again, so nobody hunts for chips that don't exist.
   const left = new Set(game.chips.filter((c) => !c.gone).map((c) => c.color));
-  const options = DIE_FACES.filter((f) => f === BLACK || left.has(f.id));
+  const options = DICE_FACES.filter((f) => f === BLACK || left.has(f.id));
   const face = options[Math.floor(Math.random() * options.length)];
 
-  const pose = CUBE[DIE_FACES.indexOf(face)];
+  const pose = CUBE[DICE_FACES.indexOf(face)];
   cubeX = Math.ceil(cubeX / 360) * 360 + 720 + pose.x;
   cubeY = Math.ceil(cubeY / 360) * 360 + 1080 + pose.y;
   $('#cube').style.transform = `rotateX(${cubeX}deg) rotateY(${cubeY}deg)`;
@@ -291,10 +291,10 @@ function finish() {
 function init() {
   $('#hero').innerHTML = Art.hero();
   $('#board-art').innerHTML = Art.board(slots);
-  $('#cube').innerHTML = DIE_FACES.map((f, i) => {
+  $('#cube').innerHTML = DICE_FACES.map((f, i) => {
     const ink = f === BLACK ? '#fff4f7' : Art.INK;
     const art = Art.svg(100, Art.face(f === BLACK ? 'sleep' : f.face, 50, 50, 56, ink));
-    return `<div class="die-face" style="--side:${CUBE[i].side};background:${f.fill};border-color:${f.edge}">${art}</div>`;
+    return `<div class="dice-face" style="--side:${CUBE[i].side};background:${f.fill};border-color:${f.edge}">${art}</div>`;
   }).join('');
   const stars = [[8, 12, 1.2], [90, 8, 0.9], [5, 52, 0.8], [94, 46, 1.1], [12, 90, 1], [88, 92, 1.3], [50, 4, 0.7], [52, 97, 0.8]];
   $('#sky').innerHTML = `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">${stars.map(([x, y, s], i) => Art.sparkle(x, y, s * 0.22, i % 2 ? '#ffffff' : '#ffe9a6', i * 20)).join('')}</svg>`;
@@ -310,7 +310,7 @@ function init() {
   $('#how').addEventListener('click', () => { $('#how-sheet').hidden = false; });
   $('[data-close]').addEventListener('click', () => { $('#how-sheet').hidden = true; });
   $('#home').addEventListener('click', openMenu);
-  $('#die').addEventListener('click', roll);
+  $('#dice').addEventListener('click', roll);
   $('#chips').addEventListener('click', (e) => {
     const el = e.target.closest('.slot');
     if (el && !el.classList.contains('up')) pick(el);
