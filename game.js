@@ -288,7 +288,7 @@ async function showPick(a, before, me) {
   if (chip.color === before.pending) {
     say(`${dot(color)} Yay! One point for <b>${safe(name)}</b>`);
     el.classList.add('match');
-    burst(el);
+    burst(el, color.id === 'mint' ? '#7fd08a' : undefined);
     bloom(a.i, color);
     await wait(750);
     if (me !== session) return;
@@ -309,30 +309,36 @@ async function showPick(a, before, me) {
   if (me === session) settle();
 }
 
-function burst(el) {
+function burst(el, fill) {
   const box = document.createElement('div');
   box.className = 'burst';
   box.innerHTML = Array.from({ length: 8 }, (_, i) => {
     const a = (i / 8) * Math.PI * 2;
-    return `<span style="--x:${Math.cos(a) * 62}px;--y:${Math.sin(a) * 62}px">${Art.svg(24, Art.sparkle(12, 12, 1))}</span>`;
+    return `<span style="--x:${Math.cos(a) * 62}px;--y:${Math.sin(a) * 62}px">${Art.svg(24, Art.sparkle(12, 12, 1, fill))}</span>`;
   }).join('');
   el.append(box);
 }
 
-// A ring of flowers opens around the scored chip. It stays on the board while the chip flies off.
+// A ring of flowers opens around the scored chip, or clovers for green.
+// It stays on the board while the chip flies off.
 function bloom(i, color) {
+  const lucky = color.id === 'mint';
   const friend = COLORS[(COLORS.indexOf(color) + 1) % COLORS.length];
   const count = 7;
   const box = document.createElement('div');
-  box.className = 'bloom';
+  box.className = lucky ? 'bloom lucky' : 'bloom';
   box.style.left = `${slots[i].x}%`;
   box.style.top = `${slots[i].y}%`;
   box.innerHTML = Array.from({ length: count }, (_, k) => {
     const a = (k / count) * Math.PI * 2 - Math.PI / 2;
     const reach = 11.5 + (k % 2) * 3;
+    const small = lucky && k % 2;
+    const size = lucky ? (small ? 6.5 : 13 + (k % 3)) : 9 + (k % 3) * 2;
+    const turn = lucky ? ((k % 3) - 1) * 13 : k * 47; // clovers stay nearly upright so their faces read
     const style = `--x:${(Math.cos(a) * reach).toFixed(1)}cqw;--y:${(Math.sin(a) * reach).toFixed(1)}cqw;` +
-      `--s:${9 + (k % 3) * 2}cqw;--r:${k * 47}deg;--d:${k * 45}ms`;
-    return `<div class="bloom-flower" style="${style}">${Art.bloom(k % 2 ? friend : color)}</div>`;
+      `--s:${size}cqw;--r:${turn}deg;--d:${k * 45}ms`;
+    const art = lucky ? (small ? Art.cloverling(500 + k) : Art.clover()) : Art.bloom(k % 2 ? friend : color);
+    return `<div class="bloom-flower" style="${style}">${art}</div>`;
   }).join('');
   $('#chips').append(box);
   setTimeout(() => box.remove(), 1500);

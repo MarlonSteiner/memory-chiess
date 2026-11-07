@@ -129,6 +129,30 @@
     return svg(100, petals + `<g class="petal" style="--p:190ms"><circle cx="50" cy="50" r="13" fill="#f6c95f"/><circle cx="50" cy="50" r="8.5" fill="#fff4d6"/></g>`);
   }
 
+  // Four heart leaves unfold from the middle. All the outlines go down first and all the fills
+  // on top, so the lines inside disappear and the clover reads as one shape.
+  function clover() {
+    const ink = '#2c2a26', leaf = '#8ad68e', shine = '#c9f0c4', cheek = '#62c26e';
+    const shape = 'M50 56C36 48 19 35 26 20 31 9 45 10 50 22 55 10 69 9 74 20 81 35 64 48 50 56Z';
+    const layer = (body) => [0, 1, 2, 3].map((k) =>
+      `<g transform="rotate(${45 + k * 90} 50 50)"><g class="petal" style="--p:${k * 50}ms">${body}</g></g>`).join('');
+    const stem = 'M52 60C53 74 55 84 60 96';
+    return svg(100,
+      `<g class="petal" style="--p:0ms"><path d="${stem}" fill="none" stroke="${ink}" stroke-width="9.4" stroke-linecap="round"/>` +
+      `<path d="${stem}" fill="none" stroke="${leaf}" stroke-width="4.8" stroke-linecap="round"/></g>` +
+      layer(`<path d="${shape}" fill="${ink}" stroke="${ink}" stroke-width="5.6" stroke-linejoin="round"/>`) +
+      layer(`<path d="${shape}" fill="${leaf}"/><path d="M35 27q3-5 7-2t7-1" fill="none" stroke="${shine}" stroke-width="3.6" stroke-linecap="round"/>`) +
+      `<g class="petal" style="--p:200ms"><circle cx="50" cy="50" r="19" fill="${leaf}"/>` +
+      `<ellipse cx="37.5" cy="54" rx="4.6" ry="3.4" fill="${cheek}"/><ellipse cx="62.5" cy="54" rx="4.6" ry="3.4" fill="${cheek}"/>` +
+      `<circle cx="42.5" cy="48.5" r="2.5" fill="${ink}"/><circle cx="57.5" cy="48.5" r="2.5" fill="${ink}"/>` +
+      `<path d="M47 53q3 3 6 0" fill="none" stroke="${ink}" stroke-width="2.2" stroke-linecap="round"/></g>`);
+  }
+
+  // The small soft clovers that float around the big ones.
+  function cloverling(seed) {
+    return svg(100, `<g class="petal" style="--p:60ms">${wash(50, 50, 44, { edge: '#6cc876', fill: '#93dc96', light: '#c0efbb' }, seed, 'clover')}</g>`);
+  }
+
   function hero() {
     const pal = { edge: '#f58fb0', fill: '#ffc4d6', light: '#ffe0ea' };
     const dots = [[100, 34], [86, 37], [160, 72], [152, 58], [152, 136], [140, 147], [58, 147], [46, 134], [40, 72], [48, 58]]
@@ -144,7 +168,7 @@
       sparkle(24, 166, 0.9, '#f6c544', 15) + sparkle(172, 170, 0.75, '#f6c544', -10) + sparkle(44, 186, 0.55, '#f6c544', 30));
   }
 
-  const api = { blob, wash, face, svg, sparkle, chipFront, chipBack, board, buddy, bloom, hero, WOOD, INK };
+  const api = { blob, wash, face, svg, sparkle, chipFront, chipBack, board, buddy, bloom, clover, cloverling, hero, WOOD, INK };
   if (typeof module !== 'undefined') module.exports = api;
   else root.Art = api;
 })(this);

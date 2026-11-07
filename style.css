@@ -277,6 +277,17 @@ label.label { display: block; }
 .burst span { position: absolute; left: 50%; top: 50%; width: 20px; height: 20px; margin: -10px; animation: fly .7s ease-out forwards; }
 
 .bloom { position: absolute; width: 0; height: 0; z-index: 8; pointer-events: none; }
+.bloom.lucky::before {
+  content: "";
+  position: absolute;
+  left: -24cqw;
+  top: -24cqw;
+  width: 48cqw;
+  height: 48cqw;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(170, 236, 170, .75), rgba(170, 236, 170, 0));
+  animation: pop .35s ease-out backwards, bloom-fade .5s ease-in .85s forwards;
+}
 .bloom-flower {
   position: absolute;
   left: calc(var(--x) - var(--s) / 2);
