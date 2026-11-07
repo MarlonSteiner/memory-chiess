@@ -8,9 +8,9 @@ To install it, open the link in Safari, tap Share, then Add to Home Screen. It w
 
 ## Rules
 
-1. Roll the dice: five colors, and a sixth black side that skips you for the round.
-2. Tap one hidden chip on the round board. If it matches the dice, you keep it for one point.
-3. If it doesn't match, it hides again in the same spot.
+1. Roll the dice: five colors, and a sixth black side that ends your turn.
+2. Tap one hidden chip on the round board. If it matches the dice, you keep it for one point and roll again.
+3. If it doesn't match, it hides again in the same spot and your turn ends.
 4. When all 20 chips are gone, the most points wins.
 
 A color with no chips left is rolled again.

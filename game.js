@@ -146,14 +146,14 @@ const dot = (c) => `<i class="dot" style="background:${c.fill};border-color:${c.
 const safe = (s) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
 const current = () => game.players[game.turn];
 
-function startTurn() {
+function startTurn(again = false) {
   phase = 'roll';
   target = null;
   store.set(SAVE_KEY, game);
   document.querySelectorAll('.player').forEach((el, i) => el.classList.toggle('active', i === game.turn));
   $('#board').classList.remove('picking');
   $('#dice').classList.add('ready');
-  say(`<b>${safe(current().name)}</b>, tap the dice!`);
+  say(again ? `<b>${safe(current().name)}</b>, roll again!` : `<b>${safe(current().name)}</b>, tap the dice!`);
 }
 
 function nextTurn() {
@@ -221,6 +221,8 @@ async function pick(el) {
     el.remove();
     if (game.chips.every((c) => c.gone)) return finish();
     await wait(250);
+    // A correct guess keeps the turn: only a wrong chip or black passes the dice on.
+    if (me === session) startTurn(true);
   } else {
     say(`${dot(color)} Oops, that's <b>${color.name}</b>. Remember it!`);
     el.classList.add('miss');
@@ -229,9 +231,8 @@ async function pick(el) {
     el.classList.remove('up', 'miss');
     el.setAttribute('aria-label', `Hidden chip ${i + 1}`);
     await wait(420);
-    if (me !== session) return;
+    if (me === session) nextTurn();
   }
-  nextTurn();
 }
 
 function burst(el) {
