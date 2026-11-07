@@ -120,6 +120,15 @@
       face(p.face, 50, 50, 27));
   }
 
+  // Built from separate petals so each one can unfold on its own when the flower blooms.
+  function bloom(pal) {
+    const petals = [0, 1, 2, 3, 4].map((k) => `<g transform="rotate(${k * 72} 50 50)"><g class="petal" style="--p:${k * 40}ms">` +
+      `<ellipse cx="50" cy="27" rx="19" ry="25" fill="${pal.edge}"/>` +
+      `<ellipse cx="50" cy="28" rx="15.5" ry="21" fill="${pal.fill}"/>` +
+      `<ellipse cx="50" cy="24" rx="8" ry="11" fill="${pal.light}" opacity=".7"/></g></g>`).join('');
+    return svg(100, petals + `<g class="petal" style="--p:190ms"><circle cx="50" cy="50" r="13" fill="#f6c95f"/><circle cx="50" cy="50" r="8.5" fill="#fff4d6"/></g>`);
+  }
+
   function hero() {
     const pal = { edge: '#f58fb0', fill: '#ffc4d6', light: '#ffe0ea' };
     const dots = [[100, 34], [86, 37], [160, 72], [152, 58], [152, 136], [140, 147], [58, 147], [46, 134], [40, 72], [48, 58]]
@@ -135,7 +144,7 @@
       sparkle(24, 166, 0.9, '#f6c544', 15) + sparkle(172, 170, 0.75, '#f6c544', -10) + sparkle(44, 186, 0.55, '#f6c544', 30));
   }
 
-  const api = { blob, wash, face, svg, sparkle, chipFront, chipBack, board, buddy, hero, WOOD, INK };
+  const api = { blob, wash, face, svg, sparkle, chipFront, chipBack, board, buddy, bloom, hero, WOOD, INK };
   if (typeof module !== 'undefined') module.exports = api;
   else root.Art = api;
 })(this);

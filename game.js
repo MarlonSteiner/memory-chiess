@@ -289,6 +289,7 @@ async function showPick(a, before, me) {
     say(`${dot(color)} Yay! One point for <b>${safe(name)}</b>`);
     el.classList.add('match');
     burst(el);
+    bloom(a.i, color);
     await wait(750);
     if (me !== session) return;
     flyToPlayer(el, before.turn);
@@ -316,6 +317,25 @@ function burst(el) {
     return `<span style="--x:${Math.cos(a) * 62}px;--y:${Math.sin(a) * 62}px">${Art.svg(24, Art.sparkle(12, 12, 1))}</span>`;
   }).join('');
   el.append(box);
+}
+
+// A ring of flowers opens around the scored chip. It stays on the board while the chip flies off.
+function bloom(i, color) {
+  const friend = COLORS[(COLORS.indexOf(color) + 1) % COLORS.length];
+  const count = 7;
+  const box = document.createElement('div');
+  box.className = 'bloom';
+  box.style.left = `${slots[i].x}%`;
+  box.style.top = `${slots[i].y}%`;
+  box.innerHTML = Array.from({ length: count }, (_, k) => {
+    const a = (k / count) * Math.PI * 2 - Math.PI / 2;
+    const reach = 11.5 + (k % 2) * 3;
+    const style = `--x:${(Math.cos(a) * reach).toFixed(1)}cqw;--y:${(Math.sin(a) * reach).toFixed(1)}cqw;` +
+      `--s:${9 + (k % 3) * 2}cqw;--r:${k * 47}deg;--d:${k * 45}ms`;
+    return `<div class="bloom-flower" style="${style}">${Art.bloom(k % 2 ? friend : color)}</div>`;
+  }).join('');
+  $('#chips').append(box);
+  setTimeout(() => box.remove(), 1500);
 }
 
 function flyToPlayer(el, who) {

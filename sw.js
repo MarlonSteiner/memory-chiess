@@ -1,5 +1,5 @@
 // Network first, so updates show up right away; the cache keeps the game playable offline.
-const CACHE = 'memory-chiess-v3';
+const CACHE = 'memory-chiess-v4';
 const FILES = ['./', 'index.html', 'style.css', 'art.js', 'net.js', 'game.js', 'vendor/mqtt.min.js', 'manifest.webmanifest',
   'icons/apple-touch-icon.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 
