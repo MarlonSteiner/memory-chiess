@@ -153,6 +153,16 @@
     return svg(100, `<g class="petal" style="--p:60ms">${wash(50, 50, 44, { edge: '#6cc876', fill: '#93dc96', light: '#c0efbb' }, seed, 'clover')}</g>`);
   }
 
+  // The dice's black side: a little swirl with big shiny eyes, dropped so it lands with a squash.
+  function poop() {
+    const eye = (x) => `<circle cx="${x}" cy="70" r="7.3" fill="#231f20"/><circle cx="${x + 2.6}" cy="67.6" r="2.7" fill="#fff"/><circle cx="${x - 3.8}" cy="73.6" r="1.3" fill="#fff"/>`;
+    return svg(100, `<g class="plop">` +
+      `<path d="M69.5 3.5C80 10 82 24 73.5 31.5C84 33.5 91 40 90 48C89.5 53 86 57.5 80.5 58C90 60 97.5 66 97.5 75C97.5 88 84 96 50 96.5C16 96.5 3 87 3 74C3 65 11 58 21 58.5C17 55 16.5 49 17 46C18 38 25 33 33 33C30 27 33 23 44 19.5C56 15 64 11 69.5 3.5Z" fill="#85593f" stroke="#724d35" stroke-width="3" stroke-linejoin="round"/>` +
+      eye(35) + eye(67) +
+      `<circle cx="33" cy="83.5" r="3" fill="#f5c4d8"/><circle cx="69.5" cy="84" r="3" fill="#f5c4d8"/>` +
+      `<path d="M43.5 81.5Q50 87 57 80.5" fill="none" stroke="#231f20" stroke-width="1.6" stroke-linecap="round"/></g>`);
+  }
+
   function hero() {
     const pal = { edge: '#f58fb0', fill: '#ffc4d6', light: '#ffe0ea' };
     const dots = [[100, 34], [86, 37], [160, 72], [152, 58], [152, 136], [140, 147], [58, 147], [46, 134], [40, 72], [48, 58]]
@@ -168,7 +178,7 @@
       sparkle(24, 166, 0.9, '#f6c544', 15) + sparkle(172, 170, 0.75, '#f6c544', -10) + sparkle(44, 186, 0.55, '#f6c544', 30));
   }
 
-  const api = { blob, wash, face, svg, sparkle, chipFront, chipBack, board, buddy, bloom, clover, cloverling, hero, WOOD, INK };
+  const api = { blob, wash, face, svg, sparkle, chipFront, chipBack, board, buddy, bloom, clover, cloverling, poop, hero, WOOD, INK };
   if (typeof module !== 'undefined') module.exports = api;
   else root.Art = api;
 })(this);

@@ -277,6 +277,7 @@ label.label { display: block; }
 .burst span { position: absolute; left: 50%; top: 50%; width: 20px; height: 20px; margin: -10px; animation: fly .7s ease-out forwards; }
 
 .bloom { position: absolute; width: 0; height: 0; z-index: 8; pointer-events: none; }
+.bloom.stinky { z-index: 11; }
 .bloom.lucky::before {
   content: "";
   position: absolute;
@@ -288,6 +289,17 @@ label.label { display: block; }
   background: radial-gradient(closest-side, rgba(170, 236, 170, .75), rgba(170, 236, 170, 0));
   animation: pop .35s ease-out backwards, bloom-fade .5s ease-in .85s forwards;
 }
+.bloom.stinky::before {
+  content: "";
+  position: absolute;
+  left: -34cqw;
+  top: -34cqw;
+  width: 68cqw;
+  height: 68cqw;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(196, 150, 118, .55), rgba(196, 150, 118, 0));
+  animation: pop .35s ease-out backwards, bloom-fade .5s ease-in .95s forwards;
+}
 .bloom-flower {
   position: absolute;
   left: calc(var(--x) - var(--s) / 2);
@@ -296,6 +308,10 @@ label.label { display: block; }
   height: var(--s);
   rotate: var(--r);
   animation: bloom-fade .5s ease-in calc(var(--d) + .75s) forwards;
+}
+.plop {
+  transform-origin: 50px 96px;
+  animation: plop .5s ease-out var(--d) backwards;
 }
 .petal {
   transform-origin: 50px 50px;
@@ -372,6 +388,11 @@ ol li::marker { color: var(--rose); font-weight: 800; }
 @keyframes breathe { 50% { scale: 1.05; } }
 @keyframes sway { 0%, 100% { rotate: -2.5deg; } 50% { rotate: 2.5deg; } }
 @keyframes petal { from { transform: scale(0) rotate(-50deg); opacity: 0; } }
+@keyframes plop {
+  0% { transform: translateY(-46px) scale(.8, 1.15); opacity: 0; }
+  45% { transform: translateY(0) scale(1.22, .76); opacity: 1; }
+  72% { transform: scale(.92, 1.1); }
+}
 @keyframes bloom-fade { to { opacity: 0; translate: 0 -2.5cqw; scale: .85; } }
 @keyframes fly { from { transform: scale(.4); opacity: 1; } to { transform: translate(var(--x), var(--y)) scale(1); opacity: 0; } }
 @keyframes fall { to { transform: translateY(110dvh) rotate(300deg); } }

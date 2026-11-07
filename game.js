@@ -265,6 +265,7 @@ async function showRoll(a, before, me) {
   if (me !== session) return;
   if (face === BLACK) {
     say(`${dot(BLACK)} Black! <b>${safe(before.players[before.turn].name)}</b> skips this round`);
+    plop();
     await wait(1900);
     if (me !== session) return;
   }
@@ -307,6 +308,22 @@ async function showPick(a, before, me) {
     await wait(420);
   }
   if (me === session) settle();
+}
+
+// Black gets a big poop on the dice with little ones landing around it.
+function plop() {
+  const count = 6;
+  const piece = (x, y, size, turn, delay) =>
+    `<div class="bloom-flower" style="--x:${x}cqw;--y:${y}cqw;--s:${size}cqw;--r:${turn}deg;--d:${delay}ms">${Art.poop()}</div>`;
+  const box = document.createElement('div');
+  box.className = 'bloom stinky';
+  box.style.left = '50%'; box.style.top = '50%';
+  box.innerHTML = Array.from({ length: count }, (_, k) => {
+    const a = (k / count) * Math.PI * 2 - Math.PI / 2;
+    return piece((Math.cos(a) * 25).toFixed(1), (Math.sin(a) * 25).toFixed(1), 11 + (k % 2) * 3, ((k % 3) - 1) * 10, 120 + k * 55);
+  }).join('') + piece(0, 0, 27, 0, 0);
+  $('#chips').append(box);
+  setTimeout(() => box.remove(), 1700);
 }
 
 function burst(el, fill) {
