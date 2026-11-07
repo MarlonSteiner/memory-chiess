@@ -2,9 +2,7 @@
 
 A cute colour memory game for 2 to 4 players, sharing one iPhone or iPad.
 
-**Play:** https://marlonsteiner.github.io/memory-chiess/
-
-To install it, open the link in Safari, tap Share, then Add to Home Screen. It works offline after the first visit.
+Once it is hosted over https, open it in Safari, tap Share, then Add to Home Screen. It then works offline after the first visit.
 
 ## Rules
 
