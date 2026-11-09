@@ -5,7 +5,7 @@
 I made Memory Chiess because my girlfriend asked for it. It's a fun, free color memory game for 2 to 4 players that you can play with friends at the table or long distance.
 
 <p align="center">
-  <img src="docs/the-ask.webp" width="320" alt="Chat: she loved a wooden memory game and couldn't find it on the App Store, so I made it">
+  <img src="docs/the-ask.png" width="320" alt="Chat: she loved a wooden memory game and couldn't find it on the App Store, so I made it">
 </p>
 
 <p align="center">
@@ -13,7 +13,7 @@ I made Memory Chiess because my girlfriend asked for it. It's a fun, free color 
 </p>
 
 <p align="center">
-  <img src="docs/menu.webp" width="470" alt="Menu with player count, Local and Online">
+  <img src="docs/menu.png" width="430" alt="Menu with player count, Local and Online">
   <img src="docs/online.png" width="300" alt="Online: create a room or join with a code">
 </p>
 
