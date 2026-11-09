@@ -5,16 +5,16 @@
 I made Memory Chiess because my girlfriend asked for it. It's a fun, free color memory game for 2 to 4 players that you can play with friends at the table or long distance.
 
 <p align="center">
-  <img src="docs/the-ask.png" width="320" alt="Chat: she loved a wooden memory game and couldn't find it on the App Store, so I made it">
+  <img src="https://raw.githubusercontent.com/MarlonSteiner/memory-chiess/main/docs/the-ask.png" width="320" alt="Chat: she loved a wooden memory game and couldn't find it on the App Store, so I made it">
 </p>
 
 <p align="center">
-  <img src="docs/gameplay.gif" width="380" alt="Rolling the dice, finding a matching chip and scoring a point">
+  <img src="https://raw.githubusercontent.com/MarlonSteiner/memory-chiess/main/docs/gameplay.gif" width="380" alt="Rolling the dice, finding a matching chip and scoring a point">
 </p>
 
 <p align="center">
-  <img src="docs/home-screen.png" width="390" alt="Menu with player count, Local and Online">
-  <img src="docs/online.png" width="270" alt="Online: create a room or join with a code">
+  <img src="https://raw.githubusercontent.com/MarlonSteiner/memory-chiess/main/docs/home-screen.png" width="390" alt="Menu with player count, Local and Online">
+  <img src="https://raw.githubusercontent.com/MarlonSteiner/memory-chiess/main/docs/online.png" width="270" alt="Online: create a room or join with a code">
 </p>
 
 Play on one iPhone or iPad passed around the table, or online from separate phones. To install it, open the link in Safari, tap Share, then Add to Home Screen. It works offline after the first visit.
