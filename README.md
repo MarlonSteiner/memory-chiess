@@ -1,12 +1,8 @@
 # Memory Chiess
 
+Fun color memory game for 2 to 4 players that you can play with friends at the table or long distance.
+
 [![Play Memory Chiess](https://img.shields.io/badge/%E2%96%B6%20Play-Memory%20Chiess-f0729c?style=for-the-badge)](https://marlonsteiner.github.io/memory-chiess/)
-
-I made Memory Chiess because my girlfriend asked for it. It's a fun, free color memory game for 2 to 4 players that you can play with friends at the table or long distance.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/MarlonSteiner/memory-chiess/main/docs/the-ask.png" width="320" alt="Chat: she loved a wooden memory game and couldn't find it on the App Store, so I made it">
-</p>
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/MarlonSteiner/memory-chiess/main/docs/gameplay.gif" width="380" alt="Rolling the dice, finding a matching chip and scoring a point">
