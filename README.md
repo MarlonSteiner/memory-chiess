@@ -13,8 +13,8 @@ I made Memory Chiess because my girlfriend asked for it. It's a fun, free color 
 </p>
 
 <p align="center">
-  <img src="docs/menu.png" width="430" alt="Menu with player count, Local and Online">
-  <img src="docs/online.png" width="300" alt="Online: create a room or join with a code">
+  <img src="docs/menu.png" width="390" alt="Menu with player count, Local and Online">
+  <img src="docs/online.png" width="270" alt="Online: create a room or join with a code">
 </p>
 
 Play on one iPhone or iPad passed around the table, or online from separate phones. To install it, open the link in Safari, tap Share, then Add to Home Screen. It works offline after the first visit.
