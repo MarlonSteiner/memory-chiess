@@ -13,7 +13,7 @@ I made Memory Chiess because my girlfriend asked for it. It's a fun, free color 
 </p>
 
 <p align="center">
-  <img src="docs/menu.png" width="390" alt="Menu with player count, Local and Online">
+  <img src="docs/home-screen.png" width="390" alt="Menu with player count, Local and Online">
   <img src="docs/online.png" width="270" alt="Online: create a room or join with a code">
 </p>
 
