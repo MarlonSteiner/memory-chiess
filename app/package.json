@@ -1,0 +1,17 @@
+{
+  "name": "memory-chiess-app",
+  "private": true,
+  "description": "iPhone and iPad app for Memory Chiess. It wraps the same web files the website uses.",
+  "scripts": {
+    "web": "node copy-web.mjs",
+    "sync": "node copy-web.mjs && cap sync ios",
+    "open": "cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "8.6.2",
+    "@capacitor/ios": "8.6.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.2"
+  }
+}

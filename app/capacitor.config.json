@@ -1,0 +1,10 @@
+{
+  "appId": "io.github.marlonsteiner.memorychiess",
+  "appName": "Memory Chiess",
+  "webDir": "www",
+  "backgroundColor": "#ffd6e3",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#ffd6e3"
+  }
+}

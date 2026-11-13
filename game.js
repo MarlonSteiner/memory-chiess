@@ -688,7 +688,9 @@ function startRoomGame() {
 }
 
 async function shareRoom() {
-  const url = `${location.origin}${location.pathname}?room=${online.code}`;
+  // Inside the iPhone app the page isn't on the web, so invites point to the website.
+  const home = location.protocol === 'https:' ? `${location.origin}${location.pathname}` : 'https://marlonsteiner.github.io/memory-chiess/';
+  const url = `${home}?room=${online.code}`;
   const text = `Play Memory Chiess with me! Room code: ${online.code}`;
   try {
     if (navigator.share) await navigator.share({ title: 'Memory Chiess', text, url });

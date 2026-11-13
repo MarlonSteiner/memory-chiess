@@ -36,6 +36,16 @@ Phones connect through HiveMQ's free public MQTT relay, so there is no server to
 
 `server/` is a small Vercel function that keeps accounts and balances in a private Vercel Blob store. Passwords are stored as scrypt hashes. The result of a game is reported by the players' phones, so a player could fake a win against the people in their own game, but nobody can be charged for a game they didn't join.
 
+## iPhone app
+
+`app/` wraps the same web files in an iOS app with Capacitor, so the website and the app share one codebase. Edit the web files at the top level, then:
+
+```bash
+cd app && npm install && ./build-sim.sh
+```
+
+That copies the web files into the app, builds it and opens it in the iPhone Simulator. `npm run open` opens the project in Xcode. Updates to the website go live on push; the App Store version only changes when a new build is submitted.
+
 ## Run locally
 
 ```bash
